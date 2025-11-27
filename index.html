@@ -176,16 +176,17 @@ function toggle(id, card) {
     card.style.border = "3px solid #0077ff";
   }
 
-  document.getElementById("confirm-btn").disabled = seleccion.length === 0;
-}
-
-/* CONFIRMAR REGALO */
 document.getElementById("confirm-btn").onclick = async () => {
+
+  const fullName = usuario.nombre.trim().split(" ");
+  const nombre = fullName.slice(0, -1).join(" ") || fullName[0];
+  const apellido = fullName.slice(-1)[0] || "";
+
   const resp = await fetch(API, {
     method: "POST",
     body: JSON.stringify({
-      nombre: usuario.nombre,
-      apellido: usuario.apellido,
+      nombre,
+      apellido,
       email: usuario.email,
       seleccion
     })
@@ -193,10 +194,15 @@ document.getElementById("confirm-btn").onclick = async () => {
 
   const r = await resp.json();
 
-  if (!r.success) {
-    alert(r.error);
-    return;
+  if (r.success) {
+    alert("¡Gracias! Tu elección fue guardada.");
+    seleccion = [];
+    cargarCatalogo();
+  } else {
+    alert("Error: " + r.error);
   }
+};
+
 
   // MENSAJE FINAL Y BLOQUEO
   document.body.innerHTML = `
@@ -213,6 +219,7 @@ document.getElementById("confirm-btn").onclick = async () => {
 
 </body>
 </html>
+
 
 
 
