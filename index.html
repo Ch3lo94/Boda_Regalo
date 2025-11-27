@@ -1,287 +1,179 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Formulario de regalos</title>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+<meta charset="UTF-8">
+<title>Catálogo de Regalos</title>
 
-  <style>
-    body {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f1f3f7;
-      color: #333;
-      display: flex;
-      justify-content: center;
-    }
+<style>
+  body {
+    margin:0;
+    padding:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #fafafa;
+  }
 
-    .container {
-      width: 100%;
-      max-width: 860px;
-      padding: 18px;
-      margin-top: 20px;
-    }
+  header {
+    padding: 25px;
+    text-align: center;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
 
-    h2 {
-      text-align: center;
-      color: #222;
-      font-weight: 600;
-      margin-bottom: 20px;
-      letter-spacing: 0.5px;
-    }
+  h1 {
+    margin:0;
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+  }
 
-    .card {
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.07);
-      margin-bottom: 20px;
-    }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+    gap: 25px;
+    padding: 30px;
+  }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-top: 15px;
-    }
+  .card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    overflow: hidden;
+    transition: transform .3s ease;
+    cursor: pointer;
+    border: 3px solid transparent;
+  }
 
-    @media (max-width: 480px) {
-      .grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
+  .card:hover {
+    transform: translateY(-6px);
+  }
 
-    .item {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
+  .card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: #eee;
+  }
 
-    .item:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    }
+  .card-content {
+    padding: 16px;
+  }
 
-    .item img {
-      width: 100%;
-      height: 135px;
-      object-fit: cover;
-      border-radius: 10px;
-      margin-bottom: 8px;
-    }
+  .card h3 {
+    margin: 0 0 6px 0;
+    font-size: 20px;
+  }
 
-    .disabled {
-      opacity: 0.45;
-      pointer-events: none;
-    }
+  .card p {
+    margin: 0 0 10px 0;
+    color: #555;
+  }
 
-    input[type="text"], input[type="number"] {
-      padding: 10px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      margin-top: 8px;
-      font-size: 15px;
-      box-sizing: border-box;
-    }
+  .agotado {
+    opacity: 0.45 !important;
+    pointer-events: none;
+  }
 
-    button {
-      background: #4a68ff;
-      color: white;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 600;
-      width: 100%;
-      transition: background 0.2s;
-      margin-top: 15px;
-    }
+  #confirm-btn {
+    display: block;
+    margin: 30px auto;
+    padding: 12px 28px;
+    background: #0077ff;
+    color: white;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+  }
 
-    button:hover {
-      background: #3957e8;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    #statusMsg, #resultMsg {
-      margin-top: 12px;
-      font-weight: 600;
-      text-align: center;
-      font-size: 15px;
-    }
-
-    #statusMsg { color: #c0392b; }
-    #resultMsg { color: #2ecc71; }
-
-    #fullName { margin-top: 15px; }
-  </style>
+  #confirm-btn:disabled {
+    background:#bbb;
+    cursor:not-allowed;
+  }
+</style>
 </head>
 
 <body>
-<div class="container">
 
-<h2>Formulario de regalos</h2>
+<header>
+  <h1>Elegí un regalo</h1>
+</header>
 
-<div class="card">
-  <div id="gSign"></div>
+<div class="grid" id="grid"></div>
 
-  <div id="userInfo" style="display:none;margin-top:10px;font-size:15px;">
-    <b>Email:</b> <span id="userEmail"></span><br>
-    <b>Nombre:</b> <span id="userName"></span><br>
-  </div>
-
-  <div id="statusMsg"></div>
-  <div id="itemsArea" class="grid"></div>
-
-  <input id="fullName" placeholder="Nombre completo" style="display:none;">
-  <button id="submitBtn" style="display:none;">Enviar selección</button>
-
-  <div id="resultMsg"></div>
-</div>
-
-</div>
-
+<button id="confirm-btn" disabled>Confirmar Selección</button>
 
 <script>
-const CLIENT_ID = "342769047778-jc52eh3n59a3vjocagmomi8pln5kbqv3.apps.googleusercontent.com";
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby7tm3mzzCbNbYQXcwxxv8cK9nuahTTbuDvy-elbyihaURbbZerQGpyj9tEvnVpnxkY/exec";
+  const API = "https://script.google.com/macros/s/AKfycby7tm3mzzCbNbYQXcwxxv8cK9nuahTTbuDvy-elbyihaURbbZerQGpyj9tEvnVpnxkY/exec";
 
-let idToken = null;
-let currentUser = null;
-let items = [];
-let alreadySubmitted = false;
+  let seleccion = [];
 
-function handleCredentialResponse(resp){
-  idToken = resp.credential;
-  const payload = parseJwt(idToken);
-  currentUser = payload;
+  async function cargar() {
+    const res = await fetch(API);
+    const items = await res.json();
 
-  document.getElementById("userEmail").textContent = payload.email || "";
-  document.getElementById("userName").textContent = payload.name || "";
-  document.getElementById("userInfo").style.display = "block";
-  document.getElementById("fullName").style.display = "block";
-  document.getElementById("submitBtn").style.display = "block";
-  document.getElementById("fullName").value = payload.name || "";
-}
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
 
-window.onload = function(){
-  google.accounts.id.initialize({ client_id: CLIENT_ID, callback: handleCredentialResponse });
-  google.accounts.id.renderButton(document.getElementById("gSign"), { theme:"outline", size:"large" });
+    items.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "card";
+      if (item.stockRestante <= 0) card.classList.add("agotado");
 
-  fetchState();
-  document.getElementById("submitBtn").addEventListener("click", sendSelection);
-};
+      card.innerHTML = `
+        <img src="${item.imagen}">
+        <div class="card-content">
+          <h3>${item.nombre}</h3>
+          <p>${item.descripcion}</p>
+          <span style="font-size:14px;color:#0077ff;">Stock disponible: ${item.stockRestante}</span>
+        </div>
+      `;
 
-function parseJwt(token){
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64).split('').map(c=>'%' + ('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')
-    );
-    return JSON.parse(jsonPayload);
-  } catch(e){ return {}; }
-}
-
-async function fetchState(){
-  const r = await fetch(WEB_APP_URL + "?action=state");
-  const j = await r.json();
-
-  if (j.items) {
-    items = j.items;
-    renderItems();
-  } else {
-    document.getElementById("statusMsg").textContent = j.error || "Error al obtener estado";
-  }
-}
-
-function renderItems(){
-  const area = document.getElementById("itemsArea");
-  area.innerHTML = "";
-
-  items.forEach(it => {
-    const div = document.createElement("div");
-    div.className = "card item";
-    if (it.remaining <= 0) div.classList.add("disabled");
-
-    div.innerHTML = `
-      <img src="${it.img}" alt="${it.name}">
-      <h4 style="margin:5px 0 8px;">${it.name}</h4>
-      <div style="font-size:14px;margin-bottom:6px;">Disponibles: <b>${it.remaining}</b></div>
-      <input type="number" min="0" max="${it.remaining}" value="0" data-idx="${it.index}">
-    `;
-
-    area.appendChild(div);
-  });
-}
-
-async function sendSelection(){
-  if (alreadySubmitted) {
-    document.getElementById("resultMsg").textContent = "Ya enviaste una selección.";
-    return;
-  }
-
-  if (!idToken) {
-    document.getElementById("resultMsg").textContent = "Inicia sesión para continuar.";
-    return;
-  }
-
-  const btn = document.getElementById("submitBtn");
-  btn.disabled = true;
-
-  const fullName = document.getElementById("fullName").value.trim();
-  if (!fullName) {
-    document.getElementById("resultMsg").textContent = "Ingresa tu nombre completo.";
-    btn.disabled = false;
-    return;
-  }
-
-  const inputs = Array.from(document.querySelectorAll("#itemsArea input[type=number]"));
-  const selections = [];
-  for (const inp of inputs) {
-    const v = Number(inp.value) || 0;
-    const idx = Number(inp.dataset.idx);
-    for (let i = 0; i < v; i++) selections.push(idx);
-  }
-
-  if (selections.length === 0) {
-    document.getElementById("resultMsg").textContent = "Debes elegir al menos un regalo.";
-    btn.disabled = false;
-    return;
-  }
-
-  try {
-    const res = await fetch(WEB_APP_URL, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ id_token:idToken, fullName, selections })
+      card.onclick = () => toggle(item.id, card);
+      grid.appendChild(card);
     });
+  }
 
-    const j = await res.json();
-    if (j.success) {
-      alreadySubmitted = true;
-      items = j.items;
-      renderItems();
-      document.getElementById("resultMsg").textContent = "✔️ ¡Tu selección fue registrada con éxito!";
-      inputs.forEach(i => i.value = 0);
+  function toggle(id, card) {
+    if (seleccion.includes(id)) {
+      seleccion = seleccion.filter(x => x !== id);
+      card.style.border = "3px solid transparent";
     } else {
-      document.getElementById("resultMsg").textContent = "Error: " + (j.error || "Desconocido");
-      btn.disabled = false;
+      seleccion.push(id);
+      card.style.border = "3px solid #0077ff";
     }
 
-  } catch(e){
-    document.getElementById("resultMsg").textContent = "Error de conexión.";
-    btn.disabled = false;
+    document.getElementById("confirm-btn").disabled = seleccion.length === 0;
   }
-}
+
+  document.getElementById("confirm-btn").onclick = async () => {
+    const nombre = prompt("Tu nombre completo:");
+    if (!nombre) return;
+
+    const email = prompt("Tu email:");
+    if (!email) return;
+
+    const respuesta = await fetch(API, {
+      method: "POST",
+      body: JSON.stringify({
+        nombre,
+        email,
+        seleccion
+      })
+    });
+
+    const r = await respuesta.json();
+
+    if (r.success) {
+      alert("¡Gracias! Tu selección fue guardada.");
+      seleccion = [];
+      cargar();
+    } else {
+      alert("Error: " + r.error);
+    }
+  };
+
+  cargar();
 </script>
 
 </body>
 </html>
-
-
