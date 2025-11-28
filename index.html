@@ -104,8 +104,8 @@
   </div>
 
 <script>
-   let seleccion = null;
-   let userEmail = null;
+  let seleccion = null;
+  let userEmail = null;
 
   window.onload = () => {
     google.accounts.id.initialize({
@@ -123,7 +123,7 @@
     cargarCatalogo();
   }
 
-  function cargarCatalogo() {
+function cargarCatalogo() {
   fetch("https://script.google.com/macros/s/AKfycbwY5TFocek-mo2wHTNGDp8LF_1uGKZvS6Ear6kPErZFz8R2Fl9MuDKx885b_RFufvWI/exec")
     .then(r => r.json())
     .then(regalos => {
@@ -140,7 +140,7 @@
           <p>${reg.descripcion || ""}</p>
           <p>Stock: ${reg.stockRestante}</p>
           <button onclick="toggle('${reg.id}', this)" 
-                  ${reg.stockRestante <= 0 ? "disabled style='background:#ccc;'" : ""}>
+                  ${reg.stockRestante <= 0 ? "disabled style='background:#ccc; cursor:not-allowed;'" : ""}>
             Seleccionar
           </button>
         `;
@@ -167,7 +167,7 @@ document.getElementById('confirm-btn').onclick = () => {
       nombre: "Invitado",
       apellido: "",
       email: userEmail,
-      seleccion: [seleccion]   // ← IDs como tu Apps Script espera
+      seleccion: [seleccion]   // IDs EXACTO como tu Apps Script requiere
     })
   })
   .then(r => r.json())
@@ -181,7 +181,9 @@ document.getElementById('confirm-btn').onclick = () => {
     }
   });
 };
-
+</script>
+</body>
+</html>
 
 
 
