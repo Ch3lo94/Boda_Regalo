@@ -3,6 +3,18 @@
 <head>
   <base target="_top">
 
+  <script>
+      const data = JSON.parse(localStorage.getItem("googleUser"));
+  
+      if (data) {
+          document.getElementById("userName").innerText = data.name;
+      } else {
+          // Si no hay datos vuelve al login
+          window.location.href = "login.html";
+      }
+  </script>
+
+  
   <style>
     body {
       font-family: Arial;
