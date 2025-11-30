@@ -10,11 +10,6 @@ body {
   margin:0;
   background:#fafafa;
   font-family:"Segoe UI", sans-serif;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  min-height:100vh;
 }
 
 .center { 
@@ -22,6 +17,7 @@ body {
   max-width:500px;
   padding:30px 20px;
   box-sizing:border-box;
+  margin:0 auto;
 }
 
 .welcome-img {
@@ -35,14 +31,14 @@ body {
 
 /* --- Grid adaptativo --- */
 .grid-wrapper {
-  width:100%;       /* ✅ ancho completo */
+  width:100%;
   padding:20px;
   box-sizing:border-box;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* adaptativo */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
 }
 
@@ -53,7 +49,7 @@ body {
   cursor:pointer;
   border:3px solid transparent;
   transition:.25s ease;
-  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
 .card:hover {
@@ -62,7 +58,7 @@ body {
 }
 
 .selected {
-  border:3px solid #d4af37 !important;
+  border:3px solid #d4af37 !important; /* borde dorado */
   box-shadow:0 6px 18px rgba(212,175,55,0.6) !important;
   transform: scale(1.02);
 }
@@ -159,9 +155,7 @@ function mostrarMensajeFinal() {
 
 // LOGIN GOOGLE
 async function handleCredentialResponse(response) {
-
   const payload = JSON.parse(atob(response.credential.split('.')[1]));
-
   usuario = {
     nombre: payload.given_name,
     apellido: payload.family_name,
@@ -196,7 +190,6 @@ async function cargarCatalogo() {
 
   items.forEach(item => {
     const card = document.createElement("div");
-
     card.className = "card";
     if (item.stockRestante <= 0) card.classList.add("agotado");
 
@@ -220,7 +213,7 @@ function toggle(id, card) {
     card.classList.remove("selected");
   } else {
     seleccion.push(id);
-    card.classList.add("selected");
+    card.classList.add("selected"); // borde dorado
   }
 
   document.getElementById("confirm-btn").disabled = seleccion.length === 0;
@@ -228,7 +221,6 @@ function toggle(id, card) {
 
 // Enviar selección
 document.getElementById("confirm-btn").onclick = async () => {
-
   const resp = await fetch(API, {
     method: "POST",
     body: JSON.stringify({
